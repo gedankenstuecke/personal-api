@@ -131,9 +131,20 @@ def complete_fitbit(request):
 
 def deliver_data(request, oh_id):
     oh_member = OpenHumansMember.objects.get(oh_id=oh_id)
-    fitbit = compile_fitbit(oh_member)
-    spotify = Data.objects.get(oh_member=oh_member, data_type='music')
-    location = Data.objects.get(oh_member=oh_member, data_type='location')
+    try:
+        fitbit = compile_fitbit(oh_member)
+    except:
+        fitbit = {}
+    try:
+        spotify = Data.objects.get(
+                        oh_member=oh_member,
+                        data_type='music')
+    except:
+        spotify = "{}"
+    try:
+        location = Data.objects.get(oh_member=oh_member, data_type='location')
+    except:
+        location = "{}"
     json_data = {
         'music': json.loads(spotify.data),
         'activity': fitbit,
