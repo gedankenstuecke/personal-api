@@ -1,32 +1,43 @@
-// Copies a string to the clipboard. Must be called from within an event handler such as click.
-// May return false if it failed, but this is not always
-// possible. Browser support for Chrome 43+, Firefox 42+, Edge and IE 10+.
-// No Safari support, as of (Nov. 2015). Returns false.
-// IE: The clipboard feature may be disabled by an adminstrator. By default a prompt is
-// shown the first time the clipboard is used (per session).
-function copyToClipboard(text) {
-    if (window.clipboardData && window.clipboardData.setData) {
-        // IE specific code path to prevent textarea being shown while dialog is visible.
-        return clipboardData.setData("Text", text);
+$(function(){
+    console.log($('#json_url').attr('href'));
+    var json_url = $('#json_url').attr('href');
+    $.get(json_url, function(data){
+        console.log(data);
+        if(data.location.tz){
+          var local_time = new Date();
+          local_time = new Date(local_time .getTime() + data.location.tz_offset*10);
+          console.log(local_time);
+          $("#local_time").html(local_time.getHours()+":"+local_time.getMinutes());
+          $("#time_zone").html(data.location.tz);
+          $("#time_info").removeClass('invisible');
+        };
 
-    } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-        var textarea = document.createElement("textarea");
-        textarea.textContent = text;
-        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
-        } catch (ex) {
-            console.warn("Copy to clipboard failed.", ex);
-            return false;
-        } finally {
-            document.body.removeChild(textarea);
+        if(data.location.place){
+          $("#location_name").html(data.location.place);
+          $("#location_info").removeClass('invisible');
+        };
+
+        if(data.location.weather){
+          $("#weather_condition").html(data.location.weather.condition_text);
+          $("#weather_temperature").html(data.location.weather.temperature_outside);
+          $("#condition_icon").attr("class", "wi wi-yahoo-" + data.location.weather.code);
+          $("#weather").removeClass('invisible');
         }
-    }
-}
 
-document.querySelector("#copy").onclick = function() {
-    var result = copyToClipboard(new $('code[name=overland_url]')[0].innerText);
-    console.log("copied?", result);
-};
+        if(data.activity){
+          $("#heart_rate").html(data.activity.heart_rate);
+          $("#steps").html(data.activity.steps);
+          $("#sleep").html(data.activity.hours_slept);
+          $("#battery_level").html(data.location.battery_level*100);
+          $("#battery_state").html(data.location.battery_state);
+          $("#activity_info").removeClass('invisible');
+        };
+
+        if(data.music){
+          $("#title").html(data.music.title);
+          $("#artist").html(data.music.artist);
+          $("#music_info").removeClass('invisible');
+        };
+
+    });
+});

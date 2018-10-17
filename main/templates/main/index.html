@@ -26,11 +26,37 @@
 <div class="row">
   <div class="col-md">
     <h2>You're logged in. </h2>
-This now allows us to read all your personal data *muhahaha*
-<p>
-  <a href="{% url 'deliver_data' oh_id=request.user.openhumansmember.oh_id%}" class="btn btn-primary">
-    See your Data!
-  </a>
+      This now allows us to read all your personal data *muhahaha*
+  <p>
+    <a href="{% url 'deliver_data' oh_id=request.user.openhumansmember.oh_id%}" class="btn btn-primary" id='json_url'>
+      See your Data!
+    </a>
+  </p>
+  <p>
+
+    <span id='time_info' class='invisible'>
+      Bastian's local time is <span id='local_time'></span> (<span id='time_zone'></span>).
+    </span>
+    <span id='location_info' class='invisible'>
+      He is currently in <span id='location_name'></span> <span id='weather' class='invisible'>. There it is
+        <i><i id='condition_icon'></i> <span id='weather_condition'></span></i> and <span id='weather_temperature'></span>˚C.</span>
+    </span>
+  </p>
+  <p>
+    <span id='activity_info' class='invisible'>
+      His current heart rate is <i class="fas fa-heartbeat"></i> <span id='heart_rate'></span> bpm.
+      He took <i class="fas fa-shoe-prints"></i> <span id='steps'></span> steps today.
+
+      He slept <i class="fas fa-bed"></i> <span id='sleep'></span> hours,
+      while his phone is <span id='battery_level'></span>% charged and is currently <span id='battery_state'></span>.
+    </span>
+  </p>
+  <p>
+    <span id='music_info' class='invisible'>
+      He currently dances to <i class="fas fa-music"></i> <span id='title'></span>
+      by <span id='artist'></span>.
+    </span>
+  </p>
   </div>
   <div class="col-md">
     <h2>
