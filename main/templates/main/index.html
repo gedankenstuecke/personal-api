@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<h1 class="mt-5">Personal API</h1>
+
+{% if not request.user.is_authenticated %}
+<div class="row">
+  <div class="col-md">
+    <p>
+      Connect to your <i>Open Humans</i> account & your personal Fitbit API endpoint to deliver status updates about yourself.
+    </p>
+    <a href="{{ auth_url }}" class="btn btn-primary">
+      Connect to Open Humans
+    </a>
+  </div>
+  <div class="col-md">
+    <h2>Why?</h2>
+    <p>
+    Why not?
+    </p>
+  </div>
+</div>
+{% else %}
+
+<div class="row">
+  <div class="col-md">
+    <h2>You're logged in. </h2>
+This now allows us to read all your personal data *muhahaha*
+  </div>
+  <div class="col-md">
+    <h2>
+      Your Fitbit account
+    </h2>
+    {%if fitbituser%}
+  </p>
+    You already have linked a fitbit user account
+  </p>
+  {%else%}
+  you don't!
+  {%endif%}
+
+  {%if fb_auth_url%}
+  <p>
+  You have added your <code>client_id/secret</code> but haven't authorized this Fitbit
+  account yet. Please click below to get access to your intraday-data!
+  <a href="{{ fb_auth_url }}" class="btn btn-primary">
+    Connect Fitbit Account
+  </a>
+  </p>
+  {%elif fitbituser%}
+  <form action="{% url 'delete-fitbit' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Remove Fitbit integration">
+  </form>
+  {%endif%}
+
+  <p>
+    <h3>
+      Add/Edit your Personal Fitbit API <code>client_id/secret</code>
+    </h3>
+  <form action="{% url 'create-fitbit' %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Fitbit Client ID</label> <input class="form-control" name="client_id" size=60 type="text" value="{{fitbituser.personal_client_id}}" placeholder="Enter your Fitbit Personal API Client-ID" required>
+    </div>
+    <div class="form-group">
+      <label>Client secret</label> <input class="form-control" name="client_secret" type="text" size=60 value="{{fitbituser.personal_client_secret}}" placeholder="Enter your Fitbit Personal API Client-Secret" required>
+    </div>
+    <input type="submit" class="btn btn-default" value="Update Client ID/Secret">
+  </form>
+  </p>
+  </div>
+
+
+{% endif %}
+
+{% endblock main %}

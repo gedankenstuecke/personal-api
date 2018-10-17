@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+django-open-humans = "*"
+ipython = "*"
+arrow = "*"
+requests = "*"
+django-heroku = "*"
+gunicorn = "*"
+tzwhere = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
