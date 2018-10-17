@@ -27,6 +27,10 @@
   <div class="col-md">
     <h2>You're logged in. </h2>
 This now allows us to read all your personal data *muhahaha*
+<p>
+  <a href="{{ url 'deliver_data' request.user.openhumansmember.oh_id}}" class="btn btn-primary">
+    See your Data!
+  </a>
   </div>
   <div class="col-md">
     <h2>
