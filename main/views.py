@@ -132,9 +132,11 @@ def complete_fitbit(request):
 def deliver_data(request, oh_id):
     oh_member = OpenHumansMember.objects.get(oh_id=oh_id)
     try:
-        fitbit = compile_fitbit(oh_member)
+        fitbit = Data.objects.get(
+                        oh_member=oh_member,
+                        data_type='fitbit')
     except:
-        fitbit = {}
+        fitbit = "{}"
     try:
         spotify = Data.objects.get(
                         oh_member=oh_member,
@@ -147,7 +149,7 @@ def deliver_data(request, oh_id):
         location = "{}"
     json_data = {
         'music': json.loads(spotify.data),
-        'activity': fitbit,
+        'activity': json.loads(fitbit.data),
         'location': json.loads(location.data)}
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"

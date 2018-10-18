@@ -20,8 +20,13 @@ def compile_fitbit(oh_member):
         'https://api.fitbit.com/1.2/user/-/sleep/date/today.json',
         headers=headers)
     json_out['hours_slept'] = round(
-        sleep.json()['summary']['totalMinutesAsleep']/60,2)
-    return json_out
+        sleep.json()['summary']['totalMinutesAsleep']/60, 2)
+    data, _ = Data.objects.get_or_create(
+                oh_member=oh_member,
+                data_type='fitbit')
+    data.data = json.dumps(json_out)
+    data.save()
+
 
 
 def compile_music(oh_member):
