@@ -149,4 +149,9 @@ def deliver_data(request, oh_id):
         'music': json.loads(spotify.data),
         'activity': fitbit,
         'location': json.loads(location.data)}
-    return(JsonResponse(json_data))
+    response = JsonResponse(json_data)
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    response["Access-Control-Max-Age"] = "1000"
+    response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+    return response

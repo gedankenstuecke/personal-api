@@ -5,7 +5,7 @@ $(function(){
         console.log(data);
         if(data.location.tz){
           var local_time = new Date();
-          local_time = new Date(local_time .getTime() + data.location.tz_offset*10);
+          local_time = new Date(local_time .getTime() + data.location.tz_offset);
           console.log(local_time);
           $("#local_time").html(local_time.getHours()+":"+local_time.getMinutes());
           $("#time_zone").html(data.location.tz);
