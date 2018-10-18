@@ -26,7 +26,9 @@
 <div class="row">
   <div class="col-md">
     <h2>You're logged in. </h2>
-      This now allows us to read all your personal data *muhahaha*
+      Now we can mine your data to build a dashboard. Right now this page
+      only uses the Overland & Spotify data from Open Humans and you'll need to provide your
+      personal API tokens for Fitbit on the right to get intraday values.
   <p>
     <a href="{% url 'deliver_data' oh_id=request.user.openhumansmember.oh_id%}" class="btn btn-primary" id='json_url'>
       See your Data!
