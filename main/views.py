@@ -9,7 +9,6 @@ from django.http import JsonResponse
 import base64
 import requests
 import json
-from .helpers import compile_fitbit
 from openhumans.models import OpenHumansMember
 from .models import FitbitUser, Data
 
@@ -136,21 +135,24 @@ def deliver_data(request, oh_id):
                         oh_member=oh_member,
                         data_type='fitbit')
     except:
-        fitbit = "{}"
+        fitbit = ""
     try:
         spotify = Data.objects.get(
                         oh_member=oh_member,
                         data_type='music')
     except:
-        spotify = "{}"
+        spotify = ""
     try:
         location = Data.objects.get(oh_member=oh_member, data_type='location')
     except:
-        location = "{}"
-    json_data = {
-        'music': json.loads(spotify.data),
-        'activity': json.loads(fitbit.data),
-        'location': json.loads(location.data)}
+        location = ""
+    json_data = {}
+    if fitbit:
+        json_data['activity'] = json.loads(fitbit.data)
+    if spotify:
+        json_data['music'] = json.loads(spotify.data)
+    if location:
+        json_data['location'] = json.loads(location.data)
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
