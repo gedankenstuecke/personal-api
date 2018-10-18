@@ -7,7 +7,7 @@ import json
 def compile_fitbit(oh_member):
     fb_user = oh_member.fitbituser
     json_out = {}
-    headers = {'Authorization': "Bearer %s" % fb_user.access_token}
+    headers = {'Authorization': "Bearer %s" % fb_user.get_access_token()}
     hr = requests.get(
         'https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json',
         headers=headers)
