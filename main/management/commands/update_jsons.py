@@ -11,4 +11,5 @@ class Command(BaseCommand):
         for oh_member in oh_members:
             helpers.compile_music(oh_member)
             helpers.compile_location(oh_member)
-            helpers.compile_fitbit(oh_member)
+            if hasattr(oh_member, 'fitbituser'):
+                helpers.compile_fitbit(oh_member)
