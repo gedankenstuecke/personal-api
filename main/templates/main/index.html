@@ -91,6 +91,8 @@
     <h3>
       Add/Edit your Personal Fitbit API <code>client_id/secret</code>
     </h3>
+    <p>Give <code>{{fb_redirect_uri}}</code> as the <code>Callback URL</code> when setting up
+      on the Fitbit end.</p>
   <form action="{% url 'create-fitbit' %}" method="post">
     {% csrf_token %}
     <div class="form-group">

@@ -29,6 +29,9 @@ def index(request):
 
     context = {'auth_url': auth_url}
     if request.user.is_authenticated:
+        context['fb_redirect_uri'] = (
+            settings.OPENHUMANS_APP_BASE_URL+'/'
+            'fitbit/authorized')
         if hasattr(request.user.openhumansmember, 'fitbituser'):
             context['fitbituser'] = request.user.openhumansmember.fitbituser
             if not request.user.openhumansmember.fitbituser.access_token:
