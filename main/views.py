@@ -95,7 +95,7 @@ def deauth_hook(request):
     if request.method == 'POST':
         print(request.POST.get('project_member_id'))
         print(request.POST.get('erasure_requested'))
-        return redirect('/')
+    return redirect('/')
 
 
 def complete_fitbit(request):
