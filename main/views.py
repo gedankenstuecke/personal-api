@@ -93,6 +93,7 @@ def delete_fitbit(request):
 @csrf_exempt
 def deauth_hook(request):
     if request.method == 'POST':
+        print(request.body)
         print(request.POST.get('project_member_id'))
         print(request.POST.get('erasure_requested'))
     return redirect('/')
