@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^about/?$', views.about, name='about'),
     url(r'^create-fitbit/?$', views.create_fitbit, name='create-fitbit'),
     url(r'^delete-fitbit/?$', views.delete_fitbit, name='delete-fitbit'),
+    url(r'^deauth_hook/?$', views.deauth_hook, name='deauth_hook'),
     url(r'^fitbit/authorized/?$', views.complete_fitbit, name='fb_complete'),
     path('data/<int:oh_id>/', views.deliver_data, name='deliver_data'),
 ]

@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
 from django.http import JsonResponse
@@ -86,6 +87,13 @@ def delete_fitbit(request):
     if request.method == 'POST':
         fb = request.user.openhumansmember.fitbituser
         fb.delete()
+        return redirect('/')
+
+
+@csrf_exempt
+def deauth_hook(request):
+    if request.method == 'POST':
+        print(request.POST)
         return redirect('/')
 
 
