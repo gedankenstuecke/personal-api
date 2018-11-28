@@ -29,7 +29,6 @@ def compile_fitbit(oh_member):
     data.save()
 
 
-
 def compile_music(oh_member):
     json_out = {}
     for f in oh_member.list_files():
@@ -48,40 +47,43 @@ def compile_music(oh_member):
 def compile_location(oh_member):
     location_key = settings.TZKEY
     json_data = {}
+    overland_files = []
     for f in oh_member.list_files():
-        if f['basename'] == 'overland-data.json' and f['source'] == 'direct-sharing-186':
-            overland_data = requests.get(f['download_url']).json()
-            lon, lat = overland_data[-1]['geometry']['coordinates']
-            json_data['battery_level'] = round(overland_data[-1]['properties']['battery_level'],2)
-            json_data['battery_state'] = overland_data[-1]['properties']['battery_state']
+        if 'processed' in f['metadata']['tags'] and f['source'] == 'direct-sharing-186':
+            overland_files.append(f)
+    latest_overland_file = sorted(overland_files, key=lambda k: k['basename'])[-1]
+    overland_data = requests.get(latest_overland_file['download_url']).json()
+    lon, lat = overland_data[-1]['geometry']['coordinates']
+    json_data['battery_level'] = round(overland_data[-1]['properties']['battery_level'],2)
+    json_data['battery_state'] = overland_data[-1]['properties']['battery_state']
 
-            weather_url = (
-                "https://query.yahooapis.com/v1/public/yql?q="
-                "select%20*%20from%20weather.forecast%20where%20u%3D'c'%20"
-                "and%20woeid%20in%20(SELECT%20woeid%20FROM%20geo.places%20"
-                "WHERE%20text%3D%22({lat}%2C{lon})%22)"
-                "&format=json&env=store%3A%2F%2F"
-                "datatables.org%2Falltableswithkeys").format(lat=lat, lon=lon)
-            weather = requests.get(weather_url).json()
-            weather_data = {}
-            place = "{}{}, {}".format(
-                weather['query']['results']['channel']['location']['city'],
-                weather['query']['results']['channel']['location']['region'],
-                weather['query']['results']['channel']['location']['country']
-            )
-            json_data['place'] = place
-            condition = weather['query']['results']['channel']['item']['condition']
-            weather_data['temperature_outside'] = condition['temp']
-            weather_data['condition_text'] = condition['text']
-            weather_data['code'] = condition['code']
-            json_data['weather'] = weather_data
-            tz = requests.get(
-                ('http://api.timezonedb.com/v2.1/get-time-zone?'
-                    'key={key}&lat={lat}&lng={lon}&'
-                    'by=position&format=json').format(
-                        lat=lat, lon=lon, key=location_key)).json()
-            json_data['tz'] = tz['abbreviation']
-            json_data['tz_offset'] = tz['gmtOffset']
+    weather_url = (
+        "https://query.yahooapis.com/v1/public/yql?q="
+        "select%20*%20from%20weather.forecast%20where%20u%3D'c'%20"
+        "and%20woeid%20in%20(SELECT%20woeid%20FROM%20geo.places%20"
+        "WHERE%20text%3D%22({lat}%2C{lon})%22)"
+        "&format=json&env=store%3A%2F%2F"
+        "datatables.org%2Falltableswithkeys").format(lat=lat, lon=lon)
+    weather = requests.get(weather_url).json()
+    weather_data = {}
+    place = "{}{}, {}".format(
+        weather['query']['results']['channel']['location']['city'],
+        weather['query']['results']['channel']['location']['region'],
+        weather['query']['results']['channel']['location']['country']
+    )
+    json_data['place'] = place
+    condition = weather['query']['results']['channel']['item']['condition']
+    weather_data['temperature_outside'] = condition['temp']
+    weather_data['condition_text'] = condition['text']
+    weather_data['code'] = condition['code']
+    json_data['weather'] = weather_data
+    tz = requests.get(
+        ('http://api.timezonedb.com/v2.1/get-time-zone?'
+            'key={key}&lat={lat}&lng={lon}&'
+            'by=position&format=json').format(
+                lat=lat, lon=lon, key=location_key)).json()
+    json_data['tz'] = tz['abbreviation']
+    json_data['tz_offset'] = tz['gmtOffset']
 
     data, _ = Data.objects.get_or_create(
                 oh_member=oh_member,
