@@ -23,7 +23,7 @@
     </p>
     <p>
     It optionally also allows you to enter <code>client_id</code> & <code>client_secret</code> values from a personal Fitbit API application.
-    If you do this the final JSON will also contain your current heart rate. 
+    If you do this the final JSON will also contain your current heart rate.
     </p>
   </div>
 </div>
@@ -39,6 +39,7 @@
     <a href="{% url 'deliver_data' oh_id=request.user.openhumansmember.oh_id%}" class="btn btn-primary" id='json_url'>
       See your Data!
     </a>
+    <a href="{% url 'about' %}">Check the About page for an example</a> of how to embed this data in your own website!
   </p>
   <p>
 

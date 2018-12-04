@@ -26,4 +26,20 @@ last geo location & last played song. No raw location data will be stored long-t
 Historic data will not be stored by this application. Instead only the latest values are stored.
 </p>
 
+<h2>How can I display my data on my website?</h2>
+<p>
+You can see an example in the footer of <a href='https://tzovar.as'>Bastian's website</a>.
+</p>
+
+<p>
+To get a better idea of how it was implemented: The HTML in the footer looks like this. On the top you will see the link to the JSON object you want to display (i.e. change this to your own data link)
+<script src="https://gist.github.com/gedankenstuecke/d905de8ebcb4b46cc3d6dd7f0f445fdc.js"></script>
+</p>
+
+<p>
+The Javascript to properly replace the placeholders with the actual values looks like this:
+<script src="https://gist.github.com/gedankenstuecke/642fa35ffa0a5921a18a3ca3af0b658e.js"></script>
+</p>
+
+
 {%endblock main%}
