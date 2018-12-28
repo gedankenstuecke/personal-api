@@ -48,9 +48,11 @@ def compile_location(oh_member):
     location_key = settings.TZKEY
     json_data = {}
     overland_files = []
+    print(oh_member.list_files())
     for f in oh_member.list_files():
         if 'processed' in f['metadata']['tags'] and f['source'] == 'direct-sharing-186':
             overland_files.append(f)
+    print(overland_files)
     latest_overland_file = sorted(overland_files, key=lambda k: k['basename'])[-1]
     overland_data = requests.get(latest_overland_file['download_url']).json()
     lon, lat = overland_data[-1]['geometry']['coordinates']
