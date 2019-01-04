@@ -46,6 +46,7 @@ def compile_music(oh_member):
 
 def compile_location(oh_member):
     location_key = settings.TZKEY
+    weather_key = settings.WEATHER_KEY
     json_data = {}
     overland_files = []
     print(oh_member.list_files())
@@ -59,25 +60,22 @@ def compile_location(oh_member):
         json_data['battery_level'] = round(overland_data[-1]['properties']['battery_level'],2)
         json_data['battery_state'] = overland_data[-1]['properties']['battery_state']
 
-        weather_url = (
-            "https://query.yahooapis.com/v1/public/yql?q="
-            "select%20*%20from%20weather.forecast%20where%20u%3D'c'%20"
-            "and%20woeid%20in%20(SELECT%20woeid%20FROM%20geo.places%20"
-            "WHERE%20text%3D%22({lat}%2C{lon})%22)"
-            "&format=json&env=store%3A%2F%2F"
-            "datatables.org%2Falltableswithkeys").format(lat=lat, lon=lon)
+        weather_url = 'http://api.openweathermap.org/data/2.5/weather?lat={lat}}&lon={lon}}&units=metric&appid={weather_key}'.format(
+            lat=lat,
+            lon=lon,
+            weather_key=weather_key
+        )
+
         weather = requests.get(weather_url).json()
         weather_data = {}
-        place = "{}{}, {}".format(
-            weather['query']['results']['channel']['location']['city'],
-            weather['query']['results']['channel']['location']['region'],
-            weather['query']['results']['channel']['location']['country']
+        place = "{}, {}".format(
+            weather['name'],
+            weather['sys']['country']
         )
         json_data['place'] = place
-        condition = weather['query']['results']['channel']['item']['condition']
-        weather_data['temperature_outside'] = condition['temp']
-        weather_data['condition_text'] = condition['text']
-        weather_data['code'] = condition['code']
+        weather_data['temperature_outside'] = weather['main']['temp']
+        weather_data['condition_text'] = weather['weather'][0]['main']
+        weather_data['code'] = weather['weather'][0]['id']
         json_data['weather'] = weather_data
         tz = requests.get(
             ('http://api.timezonedb.com/v2.1/get-time-zone?'
