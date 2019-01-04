@@ -60,7 +60,7 @@ def compile_location(oh_member):
         json_data['battery_level'] = round(overland_data[-1]['properties']['battery_level'],2)
         json_data['battery_state'] = overland_data[-1]['properties']['battery_state']
 
-        weather_url = 'http://api.openweathermap.org/data/2.5/weather?lat={lat}}&lon={lon}}&units=metric&appid={weather_key}'.format(
+        weather_url = 'http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={weather_key}'.format(
             lat=lat,
             lon=lon,
             weather_key=weather_key
