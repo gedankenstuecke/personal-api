@@ -68,11 +68,15 @@ def compile_location(oh_member):
 
         weather = requests.get(weather_url).json()
         weather_data = {}
+        country_data = requests.get('https://restcountries.eu/rest/v2/alpha/{country_data}'.format(
+            country_data=weather['sys']['country']
+        )).json()
         place = "{}, {}".format(
             weather['name'],
-            weather['sys']['country']
+            country_data['name']
         )
         json_data['place'] = place
+        json_data['flag_url'] = country_data['flag']
         weather_data['temperature_outside'] = weather['main']['temp']
         weather_data['condition_text'] = weather['weather'][0]['main']
         weather_data['code'] = weather['weather'][0]['id']
