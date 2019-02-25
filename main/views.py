@@ -94,6 +94,7 @@ def delete_fitbit(request):
 def deauth_hook(request):
     if request.method == 'POST':
         print(request.body)
+        print(json.loads(request.body))
         print(request.POST.get('project_member_id'))
         print(request.POST.get('erasure_requested'))
     return redirect('/')
