@@ -45,7 +45,7 @@ def compile_music(oh_member):
         data.data = json.dumps(json_out)
         data.save()
     except:
-        break
+        pass
 
 
 def compile_location(oh_member):
