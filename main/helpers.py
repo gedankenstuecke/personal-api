@@ -31,17 +31,21 @@ def compile_fitbit(oh_member):
 
 def compile_music(oh_member):
     json_out = {}
-    for f in oh_member.list_files():
-        if f['basename'] == 'spotify-listening-archive.json' and f['source'] == 'direct-sharing-176':
-            spotify = requests.get(f['download_url']).json()
-            title = spotify[-1]['track']['name']
-            artist = spotify[-1]['track']['artists'][0]['name']
-            json_out = {'title': title, 'artist': artist}
-    data, _ = Data.objects.get_or_create(
-                oh_member=oh_member,
-                data_type='music')
-    data.data = json.dumps(json_out)
-    data.save()
+    try:
+        for f in oh_member.list_files():
+            if f['basename'] == 'spotify-listening-archive.json' and f['source'] == 'direct-sharing-176':
+                spotify = requests.get(f['download_url']).json()
+                title = spotify[-1]['track']['name']
+                artist = spotify[-1]['track']['artists'][0]['name']
+                json_out = {'title': title, 'artist': artist}
+                break
+        data, _ = Data.objects.get_or_create(
+                    oh_member=oh_member,
+                    data_type='music')
+        data.data = json.dumps(json_out)
+        data.save()
+    except:
+        break
 
 
 def compile_location(oh_member):
