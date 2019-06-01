@@ -67,7 +67,7 @@ def compile_location(oh_member):
         lon = df.longitude.values[-1]
         lat = df.latitude.values[-1]
         json_data['battery_level'] = round(df.battery_level.values[-1],2)
-        json_data['battery_state'] = df.battery_sate.values[-1]
+        json_data['battery_state'] = df.battery_state.values[-1]
 
         weather_url = 'http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={weather_key}'.format(
             lat=lat,
