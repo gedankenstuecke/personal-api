@@ -12,6 +12,7 @@ requests = "*"
 django-heroku = "*"
 gunicorn = "*"
 tzwhere = "*"
+pandas = "*"
 
 [dev-packages]
 

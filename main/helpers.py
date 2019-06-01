@@ -2,6 +2,8 @@ import requests
 from django.conf import settings
 from main.models import Data
 import json
+import pandas
+import io
 
 
 def compile_fitbit(oh_member):
@@ -59,10 +61,13 @@ def compile_location(oh_member):
             overland_files.append(f)
     if overland_files:
         latest_overland_file = sorted(overland_files, key=lambda k: k['basename'])[-1]
-        overland_data = requests.get(latest_overland_file['download_url']).json()
-        lon, lat = overland_data[-1]['geometry']['coordinates']
-        json_data['battery_level'] = round(overland_data[-1]['properties']['battery_level'],2)
-        json_data['battery_state'] = overland_data[-1]['properties']['battery_state']
+        ol_handle = requests.get(latest_overland_file['download_url']).content
+        df = pandas.read_csv(io.StringIO(ol_handle.decode('utf-8')))
+
+        lon = df.longitude.values[-1]
+        lat = df.latitude.values[-1]
+        json_data['battery_level'] = round(df.battery_level.values[-1],2)
+        json_data['battery_state'] = df.battery_sate.values[-1]
 
         weather_url = 'http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={weather_key}'.format(
             lat=lat,
