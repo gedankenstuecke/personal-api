@@ -14,7 +14,10 @@ def compile_fitbit(oh_member):
         'https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json',
         headers=headers)
     print(hr.json())
-    json_out['heart_rate'] = hr.json()['activities-heart-intraday']['dataset'][-1]['value']
+    try:
+        json_out['heart_rate'] = hr.json()['activities-heart-intraday']['dataset'][-1]['value']
+    except:
+        pass
     activity = requests.get(
         'https://api.fitbit.com/1/user/-/activities/date/today.json',
         headers=headers)
