@@ -62,6 +62,7 @@ def compile_location(oh_member):
     if overland_files:
         latest_overland_file = sorted(overland_files, key=lambda k: k['basename'])[-1]
         ol_handle = requests.get(latest_overland_file['download_url']).content
+        print(ol_handle[0])
         df = pandas.read_csv(io.StringIO(ol_handle.decode('utf-8')))
 
         lon = df.longitude.values[-1]
