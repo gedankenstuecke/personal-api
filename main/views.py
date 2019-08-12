@@ -161,13 +161,13 @@ def deliver_data(request, oh_id):
         location = Data.objects.get(oh_member=oh_member, data_type='location')
     except:
         location = ""
-    try:
-        oura_sleep = Data.objects.get(
-            oh_member=oh_member,
-            data_type='oura-sleep'
-        )
-    except:
-        oura_sleep = ""
+    #try:
+    oura_sleep = Data.objects.get(
+        oh_member=oh_member,
+        data_type='oura-sleep'
+    )
+    #except:
+    #    oura_sleep = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)

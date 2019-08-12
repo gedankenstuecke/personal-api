@@ -13,7 +13,6 @@ def compile_fitbit(oh_member):
     hr = requests.get(
         'https://api.fitbit.com/1/user/-/activities/heart/date/today/1d/1sec.json',
         headers=headers)
-    print(hr.json())
     try:
         json_out['heart_rate'] = hr.json()['activities-heart-intraday']['dataset'][-1]['value']
     except:
@@ -59,7 +58,7 @@ def compile_oura_sleep(oh_member):
         for f in oh_member.list_files():
             if f['basename'] == 'oura-data.json' and f['source'] == 'direct-sharing-184':
                 oura = requests.get(f['download_url']).json()
-                sleep_duration =  round(
+                sleep_duration = round(
                     oura['sleep'][-1]['duration']/60/60, 2)
                 json_out = {'sleep_duration': sleep_duration}
                 break
@@ -77,14 +76,12 @@ def compile_location(oh_member):
     weather_key = settings.WEATHER_KEY
     json_data = {}
     overland_files = []
-    print(oh_member.list_files())
     for f in oh_member.list_files():
         if 'processed' in f['metadata']['tags'] and f['source'] == 'direct-sharing-186':
             overland_files.append(f)
     if overland_files:
         latest_overland_file = sorted(overland_files, key=lambda k: k['basename'])[-1]
         ol_handle = requests.get(latest_overland_file['download_url']).content
-        print(ol_handle[0])
         try:
             df = pandas.read_csv(io.StringIO(ol_handle.decode('utf-8')))
         except:
