@@ -58,8 +58,10 @@ def compile_oura_sleep(oh_member):
         for f in oh_member.list_files():
             if f['basename'] == 'oura-data.json' and f['source'] == 'direct-sharing-184':
                 oura = requests.get(f['download_url']).json()
-                sleep_duration = round(
-                    oura['sleep'][-1]['duration']/60/60, 2)
+                total_duration = oura['sleep'][-1]['duration']
+                awake = oura['sleep'][-1]['awake']
+                sleep_duration = total_duration - awake
+                sleep_duration = round(sleep_duration/60/60, 2)
                 json_out = {'sleep_duration': sleep_duration}
                 break
         data, _ = Data.objects.get_or_create(
