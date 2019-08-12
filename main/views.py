@@ -161,6 +161,13 @@ def deliver_data(request, oh_id):
         location = Data.objects.get(oh_member=oh_member, data_type='location')
     except:
         location = ""
+    try:
+        oura_sleep = Data.objects.get(
+            oh_member=oh_member,
+            data_type='oura-sleep'
+        )
+    except:
+        oura_sleep = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)
@@ -168,6 +175,8 @@ def deliver_data(request, oh_id):
         json_data['music'] = json.loads(spotify.data)
     if location:
         json_data['location'] = json.loads(location.data)
+    if oura_sleep:
+        json_data['oura_sleep'] = json.loads(oura_sleep.data)
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"

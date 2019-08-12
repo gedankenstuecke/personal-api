@@ -16,5 +16,6 @@ class Command(BaseCommand):
                 helpers.compile_music(oh_member)
                 # disabled until we fix overland
                 helpers.compile_location(oh_member)
+                helpers.compile_oura_sleep(oh_member)
                 if hasattr(oh_member, 'fitbituser'):
                     helpers.compile_fitbit(oh_member)

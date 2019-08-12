@@ -53,6 +53,25 @@ def compile_music(oh_member):
         pass
 
 
+def compile_oura_sleep(oh_member):
+    json_out = {}
+    try:
+        for f in oh_member.list_files():
+            if f['basename'] == 'oura-data.json' and f['source'] == 'direct-sharing-184':
+                oura = requests.get(f['download_url']).json()
+                sleep_duration =  round(
+                    oura['sleep'][-1]['duration']/60/60, 2)
+                json_out = {'sleep_duration': sleep_duration}
+                break
+        data, _ = Data.objects.get_or_create(
+                    oh_member=oh_member,
+                    data_type='oura-sleep')
+        data.data = json.dumps(json_out)
+        data.save()
+    except:
+        pass
+
+
 def compile_location(oh_member):
     location_key = settings.TZKEY
     weather_key = settings.WEATHER_KEY
