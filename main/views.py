@@ -209,10 +209,11 @@ def deliver_lametric(request, oh_id):
 
     if location:
         loc_json = json.loads(location.data)
-        frames.append({"icon": 2351, 'text': loc_json['place']})
+        frames.append({"icon": 2351, 'text': "Bastian is in " + loc_json['place']})
 
     if spotify:
-        json_data['music'] = json.loads(spotify.data)
+        music_json = json.loads(spotify.data)
+        frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['title'], music_json['artist'])})
     if oura_sleep:
         json_data['oura_sleep'] = json.loads(oura_sleep.data)
 
