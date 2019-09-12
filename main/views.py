@@ -183,3 +183,42 @@ def deliver_data(request, oh_id):
     response["Access-Control-Max-Age"] = "1000"
     response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
     return response
+
+
+def deliver_lametric(request, oh_id):
+    oh_member = OpenHumansMember.objects.get(oh_id=oh_id)
+    try:
+        spotify = Data.objects.get(
+                        oh_member=oh_member,
+                        data_type='music')
+    except:
+        spotify = ""
+    try:
+        location = Data.objects.get(oh_member=oh_member, data_type='location')
+    except:
+        location = ""
+    try:
+        oura_sleep = Data.objects.get(
+            oh_member=oh_member,
+            data_type='oura-sleep'
+        )
+    except:
+        oura_sleep = ""
+    json_data = {}
+    frames = []
+
+    if location:
+        loc_json = json.loads(location.data)
+        frames.append({"icon": 2351, 'text': loc_json['place']})
+
+    if spotify:
+        json_data['music'] = json.loads(spotify.data)
+    if oura_sleep:
+        json_data['oura_sleep'] = json.loads(oura_sleep.data)
+
+    response = JsonResponse({"frames": frames})
+    response["Access-Control-Allow-Origin"] = "*"
+    response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+    response["Access-Control-Max-Age"] = "1000"
+    response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+    return response

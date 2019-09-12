@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^deauth_hook/?$', views.deauth_hook, name='deauth_hook'),
     url(r'^fitbit/authorized/?$', views.complete_fitbit, name='fb_complete'),
     path('data/<int:oh_id>/', views.deliver_data, name='deliver_data'),
+    path('lametric_data/<int:oh_id>/', views.deliver_lametric, name='deliver_lametric'),
 ]
