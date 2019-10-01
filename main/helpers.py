@@ -62,7 +62,13 @@ def compile_oura_sleep(oh_member):
                 awake = oura['sleep'][-1]['awake']
                 sleep_duration = total_duration - awake
                 sleep_duration = round(sleep_duration/60/60, 2)
-                json_out = {'sleep_duration': sleep_duration}
+                oura_steps = oura['activity'][-1]['steps']
+                oura_temp = oura['sleep'][-1]['temperature_delta']
+                json_out = {
+                    'sleep_duration': sleep_duration,
+                    'steps': oura_steps,
+                    'temperature': oura_temp
+                    }
                 break
         data, _ = Data.objects.get_or_create(
                     oh_member=oh_member,
