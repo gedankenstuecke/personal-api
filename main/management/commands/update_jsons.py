@@ -20,3 +20,5 @@ class Command(BaseCommand):
                     helpers.compile_oura_sleep(oh_member)
                     if hasattr(oh_member, 'fitbituser'):
                         helpers.compile_fitbit(oh_member)
+            except:
+                pass
