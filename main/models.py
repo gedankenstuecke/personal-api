@@ -105,7 +105,9 @@ class NetatmoUser(models.Model):
             data={
                 'grant_type': 'refresh_token',
                 'refresh_token': self.refresh_token,
-                'redirect_uri': redirect_uri},
+                'redirect_uri': redirect_uri,
+                'client_id': settings.NETATMO_CLIENT_ID,
+                'client_secret': settings.NETATMO_CLIENT_SECRET},
             auth=requests.auth.HTTPBasicAuth(
                 self.personal_client_id,
                 self.personal_client_secret))
