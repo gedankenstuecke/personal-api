@@ -47,7 +47,7 @@ def index(request):
                  'fitbit/authorized')
                 context['fb_auth_url'] = fb_auth_url
     if hasattr(request.user.openhumansmember, 'netatmouser'):
-        context['netatmouser']
+        context['netatmouser'] = request.user.openhumansmember.netatmouser
     context['netatmo_link'] = "https://api.netatmo.com/oauth2/authorize?client_id={}&redirect_uri={}&scope=read_station&state=random_string".format(
         settings.NETATMO_CLIENT_ID,
         settings.OPENHUMANS_APP_BASE_URL+'/netatmo/authorized'
