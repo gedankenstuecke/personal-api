@@ -259,7 +259,7 @@ def complete_netatmo(request):
     # Save the user as a FitbitMember and store tokens
     netatmo_user.access_token = rjson['access_token']
     netatmo_user.refresh_token = rjson['refresh_token']
-    netatmo_user.expires_in = arrow.now().shift(seconds=rjson['expires_in'])
+    netatmo_user.expires_in = str(arrow.now().shift(seconds=rjson['expires_in']))
     netatmo_user.save()
 
     return redirect('/')
