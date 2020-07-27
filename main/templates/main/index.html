@@ -111,7 +111,11 @@
     <input type="submit" class="btn btn-default" value="Update Client ID/Secret">
   </form>
   </p>
-  <a class='btn btn-default' href="{{netatmo_link}}">Add NetAtmo</a>
+  {% if not netatmouser %}
+  <a class='btn btn-primary' href="{{netatmo_link}}">Add NetAtmo</a>
+  {%else%}
+  {{netatmouser}}
+  {%endif%}
   </div>
 
 

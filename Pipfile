@@ -13,6 +13,7 @@ django-heroku = "*"
 gunicorn = "*"
 tzwhere = "*"
 pandas = "*"
+geopy = "*"
 
 [dev-packages]
 
