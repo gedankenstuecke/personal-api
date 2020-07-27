@@ -175,6 +175,13 @@ def deliver_data(request, oh_id):
         )
     except:
         oura_sleep = ""
+    try:
+        netatmo = Data.objects.get(
+            oh_member=oh_member,
+            data_type='netatmo'
+        )
+    except:
+        netatmo = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)
@@ -184,6 +191,8 @@ def deliver_data(request, oh_id):
         json_data['location'] = json.loads(location.data)
     if oura_sleep:
         json_data['oura_sleep'] = json.loads(oura_sleep.data)
+    if netatmo:
+        json_data['netatmo'] = json.loads(netatmo.data)
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
