@@ -142,6 +142,7 @@ def compile_netatmo(oh_member):
     latest_overland_file = None
     overland_files = []
     json_data = {}
+    print('get overland in netatmo')
     for f in oh_member.list_files():
         if 'processed' in f['metadata']['tags'] and f['source'] == 'direct-sharing-186':
             overland_files.append(f)
@@ -152,16 +153,19 @@ def compile_netatmo(oh_member):
             df = pandas.read_csv(io.StringIO(ol_handle.decode('utf-8')))
         except:
             pass
+    print('got overland')
     na = oh_member.netatmouser
     h = {'Authorization': 'Bearer {}'.format(na.get_access_token())}
     resp = requests.get('https://api.netatmo.com/api/getstationsdata?get_favorites=true', headers=h)
     station = resp.json()['body']['devices'][0]
+    print('got netatmo')
     if latest_overland_file:
         lon = df.longitude.values[-1]
         lat = df.latitude.values[-1]
         loc = resp.json()['body']['devices'][0]['place']['location']
         dist = round(geopy.distance.distance((lat,lon),(loc[1],loc[0])).km)
         json_data['home_distance'] = dist
+        print('got distance')
     json_data['CO2'] = station['dashboard_data']['CO2']
     json_data['indoor_temperature'] = station['dashboard_data']['Temperature']
     json_data['pressure'] = station['dashboard_data']['Pressure']
@@ -169,8 +173,10 @@ def compile_netatmo(oh_member):
     outdoor = station['modules'][0]
     json_data['outdoor_temperature'] = outdoor['dashboard_data']['Temperature']
     json_data['outdoor_humidity'] = outdoor['dashboard_data']['Humidity']
+    print('create netatmo json')
     data, _ = Data.objects.get_or_create(
                 oh_member=oh_member,
                 data_type='netatmo')
     data.data = json.dumps(json_data)
     data.save()
+    print('saved netatmo json')
