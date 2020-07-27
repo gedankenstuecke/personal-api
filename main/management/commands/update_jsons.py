@@ -20,5 +20,8 @@ class Command(BaseCommand):
                     helpers.compile_oura_sleep(oh_member)
                     if hasattr(oh_member, 'fitbituser'):
                         helpers.compile_fitbit(oh_member)
+                    if hasattr(oh_member, 'netatmouser'):
+                        print('do netatmo')
+                        helpers.compile_netatmo(oh_member)
             except:
                 pass

@@ -4,6 +4,7 @@ from main.models import Data
 import json
 import pandas
 import io
+import geopy.distance
 
 
 def compile_fitbit(oh_member):
@@ -134,3 +135,42 @@ def compile_location(oh_member):
                     data_type='location')
         data.data = json.dumps(json_data)
         data.save()
+
+
+def compile_netatmo(oh_member):
+    dist = None
+    latest_overland_file = None
+    overland_files = []
+    json_data = {}
+    for f in oh_member.list_files():
+        if 'processed' in f['metadata']['tags'] and f['source'] == 'direct-sharing-186':
+            overland_files.append(f)
+    if overland_files:
+        latest_overland_file = sorted(overland_files, key=lambda k: k['basename'])[-1]
+        ol_handle = requests.get(latest_overland_file['download_url']).content
+        try:
+            df = pandas.read_csv(io.StringIO(ol_handle.decode('utf-8')))
+        except:
+            pass
+    na = oh_member.netatmouser
+    h = {'Authorization': 'Bearer {}'.format(na.get_access_token())}
+    resp = requests.get('https://api.netatmo.com/api/getstationsdata?get_favorites=true', headers=h)
+    station = resp.json()['body']['devices'][0]
+    if latest_overland_file:
+        lon = df.longitude.values[-1]
+        lat = df.latitude.values[-1]
+        loc = resp.json()['body']['devices'][0]['place']['location']
+        dist = round(geopy.distance.distance((lat,lon),(loc[1],loc[0])).km)
+        json_data['home_distance'] = dist
+    json_data['CO2'] = station['dashboard_data']['CO2']
+    json_data['indoor_temperature'] = station['dashboard_data']['Temperature']
+    json_data['pressure'] = station['dashboard_data']['Pressure']
+    json_data['noise'] = station['dashboard_data']['Noise']
+    outdoor = station['modules'][0]
+    json_data['outdoor_temperature'] = outdoor['dashboard_data']['Temperature']
+    json_data['outdoor_humidity'] = outdoor['dashboard_data']['Humidity']
+    data, _ = Data.objects.get_or_create(
+                oh_member=oh_member,
+                data_type='netatmo')
+    data.data = json.dumps(json_data)
+    data.save()
