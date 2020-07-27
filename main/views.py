@@ -251,9 +251,12 @@ def complete_netatmo(request):
 
     rjson = r.json()
     print(rjson)
-    netatmo_user = NetatmoUser()
+    if hasattr(request.user.openhumansmember, 'netatmouser'):
+        netatmo_user = request.user.openhumansmember.netatmouser
+    else:
+        netatmo_user = NetatmoUser()
+    netatmo_user.oh_member = request.user.openhumansmember
     # Save the user as a FitbitMember and store tokens
-    netatmo_user.acc = rjson['user_id']
     netatmo_user.access_token = rjson['access_token']
     netatmo_user.refresh_token = rjson['refresh_token']
     netatmo_user.expires_in = arrow.now().shift(seconds=rjson['expires_in'])
