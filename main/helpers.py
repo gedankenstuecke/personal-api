@@ -163,7 +163,7 @@ def compile_netatmo(oh_member):
         lon = df.longitude.values[-1]
         lat = df.latitude.values[-1]
         loc = resp.json()['body']['devices'][0]['place']['location']
-        dist = round(geopy.distance.distance((lat,lon),(loc[1],loc[0])).km,1)
+        dist = round(geopy.distance.distance((lat,lon),(loc[1],loc[0])).km, 1)
         json_data['home_distance'] = dist
         print('got distance')
     json_data['CO2'] = station['dashboard_data']['CO2']
