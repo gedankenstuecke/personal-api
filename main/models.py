@@ -114,8 +114,6 @@ class NetatmoUser(models.Model):
             self.access_token = data['access_token']
             self.refresh_token = data['refresh_token']
             self.token_expires = self.get_expiration(data['expires_in'])
-            self.scope = data['scope']
-            self.userid = data['user_id']
             self.save()
             return True
         return False
