@@ -134,6 +134,10 @@ OPENHUMANS_APP_BASE_URL = os.getenv(
                             'OPENHUMANS_APP_BASE_URL',
                             'http://127.0.0.1:5000')
 
+NETATMO_CLIENT_ID = os.getenv('NETATMO_CLIENT_ID', 'fsadf')
+NETATMO_CLIENT_SECRET = os.getenv('NETATMO_CLIENT_SECRET', 'fasdfa')
+
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

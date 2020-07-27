@@ -10,8 +10,9 @@ from django.http import JsonResponse
 import base64
 import requests
 import json
+import arrow
 from openhumans.models import OpenHumansMember
-from .models import FitbitUser, Data
+from .models import FitbitUser, Data, NetatmoUser
 
 
 def index(request):
@@ -45,6 +46,10 @@ def index(request):
                  '&redirect_uri='+settings.OPENHUMANS_APP_BASE_URL+'/'
                  'fitbit/authorized')
                 context['fb_auth_url'] = fb_auth_url
+    context['netatmo_link'] = "https://api.netatmo.com/oauth2/authorize?client_id={}&redirect_uri={}&scope=read_station&state=random_string".format(
+        settings.NETATMO_CLIENT_ID,
+        settings.OPENHUMANS_APP_BASE_URL+'/netatmo/authorized'
+    )
     return render(request, 'main/index.html', context=context)
 
 
@@ -223,3 +228,35 @@ def deliver_lametric(request, oh_id):
     response["Access-Control-Max-Age"] = "1000"
     response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
     return response
+
+
+def complete_netatmo(request):
+
+    code = request.GET['code']
+
+    payload = {
+        'code': code,
+        'grant_type': 'authorization_code',
+        'client_id': settings.NETATMO_CLIENT_ID,
+        'client_secret': settings.NETATMO_CLIENT_SECRET,
+        'redirect_uri': settings.OPENHUMANS_APP_BASE_URL+'/netatmo/authorized',
+        'scope': "read_station"
+        }
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded;chartset=UTF-8'
+        }
+    # Make request for access token
+    r = requests.post(
+            'https://api.netatmo.com/oauth2/token', payload, headers=headers)
+
+    rjson = r.json()
+    print(rjson)
+    netatmo_user = NetatmoUser()
+    # Save the user as a FitbitMember and store tokens
+    netatmo_user.acc = rjson['user_id']
+    netatmo_user.access_token = rjson['access_token']
+    netatmo_user.refresh_token = rjson['refresh_token']
+    netatmo_user.expires_in = arrow.now().shift(seconds=rjson['expires_in'])
+    netatmo_user.save()
+
+    return redirect('/')
