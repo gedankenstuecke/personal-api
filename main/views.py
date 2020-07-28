@@ -231,7 +231,7 @@ def deliver_lametric(request, oh_id):
         frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['title'], music_json['artist'])})
     if netatmo:
         netatmo_data = json.loads(netatmo.data)
-        frames.append({"icon": 4744, "text": "The CO2 level at home is {}".format(netatmo_data['CO2'])})
+        frames.append({"icon": 4744, "text": "The CO2 level at home is {} ppm".format(netatmo_data['CO2'])})
         frames.append({"icon": 96, "text": "The temperature is {} °C (outdoor) & {} °C (indoor)".format(netatmo_data['outdoor_temperature'], netatmo_data['indoor_temperature'])})
 
     response = JsonResponse({"frames": frames})
