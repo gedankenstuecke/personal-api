@@ -114,7 +114,10 @@
   {% if not netatmouser %}
   <a class='btn btn-primary' href="{{netatmo_link}}">Add NetAtmo</a>
   {%else%}
-  {{netatmouser}}
+  <form action="{% url 'delete-netatmo' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Remove Netatmo integration">
+  </form>
   {%endif%}
   </div>
 

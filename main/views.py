@@ -275,3 +275,10 @@ def complete_netatmo(request):
     netatmo_user.save()
 
     return redirect('/')
+
+
+def delete_netatmo(request):
+    if request.method == 'POST':
+        na = request.user.openhumansmember.netatmouser
+        na.delete()
+        return redirect('/')
