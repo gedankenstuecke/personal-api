@@ -119,8 +119,19 @@
     <input type="submit" class="btn btn-danger" value="Remove Netatmo integration">
   </form>
   {%endif%}
-  </div>
 
+
+<p>
+  <h3>Add/edit your last.fm account</h3>
+  <form action="{% url 'create-lastfm' %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label>Enter a new <i>last.fm</i> user name</label> <input class="form-control" name="username" size=60 type="text" value="{{lastfmuser}}" placeholder="Enter your last.fm username" required>
+    </div>
+    <input type="submit" class="btn btn-default" value="Update last.fm username">
+  </form>
+</p>
+  </div>
 
 {% endif %}
 

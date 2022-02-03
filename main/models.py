@@ -70,6 +70,13 @@ class Data(models.Model):
     data = models.TextField(default="{}")
 
 
+class LastFmUser(models.Model):
+    oh_member = models.OneToOneField(
+                    OpenHumansMember,
+                    on_delete=models.CASCADE)
+    username = models.CharField(max_length=256, default='')
+
+
 class NetatmoUser(models.Model):
     """docstring for FB user"""
     oh_member = models.OneToOneField(

@@ -144,5 +144,8 @@ LOGOUT_REDIRECT_URL = '/'
 TZKEY = os.getenv('TZKEY', 'fasdfa')
 WEATHER_KEY = os.getenv('WEATHER_KEY', 'test')
 
+LASTFM_KEY = os.getenv('LASTFM_KEY', 'key')
+
+
 import django_heroku
 django_heroku.settings(locals())

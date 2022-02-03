@@ -182,3 +182,20 @@ def compile_netatmo(oh_member):
     data.data = json.dumps(json_data)
     data.save()
     print('saved netatmo json')
+
+
+def compile_lastfm(oh_member):
+    json_data = {}
+    lfm_user = oh_member.lastfmuser
+    request_url = "http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user={}&api_key={}&format=json&limit=1".format(
+    lfm_user.username, settings.LASTFM_KEY
+    )
+    response = requests.get(request_url).json()
+    json_data['artist'] = response['recenttracks']['track'][0]['artist']['#text']
+    json_data['song_title'] = response['recenttracks']['track'][0]['name']
+
+    data, _ = Data.objects.get_or_create(
+                oh_member=oh_member,
+                data_type='music_lastfm')
+    data.data = json.dumps(json_data)
+    data.save()

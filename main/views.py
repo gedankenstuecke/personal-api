@@ -12,7 +12,7 @@ import requests
 import json
 import arrow
 from openhumans.models import OpenHumansMember
-from .models import FitbitUser, Data, NetatmoUser
+from .models import FitbitUser, Data, NetatmoUser, LastFmUser
 
 
 def index(request):
@@ -34,6 +34,8 @@ def index(request):
         context['fb_redirect_uri'] = (
             settings.OPENHUMANS_APP_BASE_URL+'/'
             'fitbit/authorized')
+        if hasattr(request.user.openhumansmember, 'lastfmuser'):
+            context['lastfmuser'] = request.user.openhumansmember.lastfmuser.username
         if hasattr(request.user.openhumansmember, 'fitbituser'):
             context['fitbituser'] = request.user.openhumansmember.fitbituser
             if not request.user.openhumansmember.fitbituser.access_token:
@@ -87,6 +89,21 @@ def create_fitbit(request):
         fb_user.access_token = ''
         fb_user.refresh_token = ''
         fb_user.save()
+    return redirect('/')
+
+
+def create_lastfm(request):
+    """
+    collect fitbit client id/Secret
+    """
+    if request.method == 'POST':
+        if hasattr(request.user.openhumansmember, 'lastfmuser'):
+            lastfm_user = request.user.openhumansmember.lastfmuser
+        else:
+            lastfm_user = LastFmUser()
+        lastfm_user.oh_member = request.user.openhumansmember
+        lastfm_user.username = request.POST.get('username')
+        lastfm_user.save()
     return redirect('/')
 
 
@@ -182,6 +199,13 @@ def deliver_data(request, oh_id):
         )
     except:
         netatmo = ""
+    try:
+        lastfm = Data.objects.get(
+            oh_member=oh_member,
+            data_type='music_lastfm'
+        )
+    except:
+        lastfm = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)
@@ -193,6 +217,8 @@ def deliver_data(request, oh_id):
         json_data['oura_sleep'] = json.loads(oura_sleep.data)
     if netatmo:
         json_data['netatmo'] = json.loads(netatmo.data)
+    if lastfm:
+        json_data['lastfm'] = json.loads(lastfm.data)
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
