@@ -14,6 +14,7 @@ gunicorn = "*"
 tzwhere = "*"
 pandas = "*"
 geopy = "*"
+psycopg2 = "~=2.8.5"
 
 [dev-packages]
 
