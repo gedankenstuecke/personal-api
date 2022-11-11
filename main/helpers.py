@@ -131,6 +131,7 @@ def compile_location(oh_member):
                     lat=lat, lon=lon, key=location_key)).json()
         json_data['tz'] = tz['abbreviation']
         json_data['tz_offset'] = tz['gmtOffset']
+        print(json_data)
 
         data, _ = Data.objects.get_or_create(
                     oh_member=oh_member,
