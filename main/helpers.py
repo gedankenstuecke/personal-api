@@ -100,6 +100,10 @@ def compile_location(oh_member):
         lat = df.latitude.values[-1]
         json_data['battery_level'] = round(df.battery_level.values[-1],2)
         json_data['battery_state'] = df.battery_state.values[-1]
+        if json_data['battery_state'] == False:
+            json_data['battery_state'] = 'unplugged'
+        if json_data['battery_state'] == True:
+            json_data['battery_state'] = 'plugged'
 
         weather_url = 'http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={weather_key}'.format(
             lat=lat,
