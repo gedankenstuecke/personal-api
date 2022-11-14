@@ -173,13 +173,21 @@ def compile_netatmo(oh_member):
         dist = round(geopy.distance.distance((lat,lon),(loc[1],loc[0])).km, 1)
         json_data['home_distance'] = dist
         print('got distance')
-    json_data['CO2'] = station['dashboard_data']['CO2']
-    json_data['indoor_temperature'] = station['dashboard_data']['Temperature']
-    json_data['pressure'] = station['dashboard_data']['Pressure']
-    json_data['noise'] = station['dashboard_data']['Noise']
-    outdoor = station['modules'][0]
-    json_data['outdoor_temperature'] = outdoor['dashboard_data']['Temperature']
-    json_data['outdoor_humidity'] = outdoor['dashboard_data']['Humidity']
+    if 'dashboard_data' in station.keys():
+        json_data['CO2'] = station['dashboard_data']['CO2']
+        json_data['indoor_temperature'] = station['dashboard_data']['Temperature']
+        json_data['pressure'] = station['dashboard_data']['Pressure']
+        json_data['noise'] = station['dashboard_data']['Noise']
+        outdoor = station['modules'][0]
+        json_data['outdoor_temperature'] = outdoor['dashboard_data']['Temperature']
+        json_data['outdoor_humidity'] = outdoor['dashboard_data']['Humidity']
+    else:
+        json_data['CO2'] = 'NA'
+        json_data['indoor_temperature'] = 'NA'
+        json_data['pressure'] = 'NA'
+        json_data['noise'] = 'NA'
+        json_data['outdoor_temperature'] = 'NA'
+        json_data['outdoor_humidity'] = 'NA'
     print('create netatmo json')
     data, _ = Data.objects.get_or_create(
                 oh_member=oh_member,
