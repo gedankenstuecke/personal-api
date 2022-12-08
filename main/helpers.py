@@ -55,19 +55,19 @@ def compile_music(oh_member):
 
 def higher(value, std_one, std_two):
     if value >= std_two:
-        return "2"
+        return 2
     elif value >= std_one:
-        return "1"
+        return 1
     else:
-        return "0"
+        return 0
 
 def lower(value, std_one, std_two):
     if value <= std_two:
-        return "2"
+        return 2
     elif value <= std_one:
-        return "1"
+        return 1
     else:
-        return "0"
+        return 0
 
 
 def get_oura_deviations(sleep_data):
