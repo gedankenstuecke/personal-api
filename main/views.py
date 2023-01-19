@@ -245,7 +245,7 @@ def deliver_lametric(request, oh_id):
     frames = []
 
 
-    if spotify:
+    if lastfm:
         music_json = json.loads(lastfm.data)
         frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['song_title'], music_json['artist'])})
     if netatmo:
