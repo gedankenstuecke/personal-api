@@ -81,7 +81,7 @@ def get_oura_deviations(sleep_data):
         hr_lowest_devs.append(i['hr_lowest'])
         breath_average_devs.append(i['breath_average'])
         hrv_devs.append(i['rmssd'])
-    
+
     temp_std_one = np.mean(temperature_devs) + np.std(temperature_devs)
     temp_std_two = np.mean(temperature_devs) + 2*np.std(temperature_devs)
     hr_lowest_std_one = np.mean(hr_lowest_devs) + np.std(hr_lowest_devs)
@@ -97,7 +97,7 @@ def get_oura_deviations(sleep_data):
     hrv = lower(sleep_data[-1]['rmssd'], hrv_std_one, hrv_std_two)
 
     response = {
-        'temp': temp, 'hr': hr, 'breath': breath, "hrv": hrv, 
+        'temp': temp, 'hr': hr, 'breath': breath, "hrv": hrv,
         "sum": temp + hr + breath + hrv
     }
     return response
@@ -119,7 +119,7 @@ def compile_oura_sleep(oh_member):
                 json_out = {
                     'sleep_duration': sleep_duration,
                     'steps': oura_steps,
-                    'temperature': oura_temp, 
+                    'temperature': oura_temp,
                     'resting_hr': oura_rhr,
                     'deviations': deviations
                     }
@@ -248,6 +248,26 @@ def compile_netatmo(oh_member):
     data.data = json.dumps(json_data)
     data.save()
     print('saved netatmo json')
+
+    s = {station['module_name']: {'temperature': station["dashboard_data"]['Temperature'],
+                               'CO2': station["dashboard_data"]['CO2']
+                              }}
+
+    for i in station['modules']:
+        if 'CO2' in i['dashboard_data']:
+            s[i['module_name']] = {
+                'temperature': i['dashboard_data']['Temperature'],
+                'CO2': i['dashboard_data']['CO2']}
+        else:
+            s[i['module_name']] = {
+                'temperature': i['dashboard_data']['Temperature']}
+
+    data, _ = Data.objects.get_or_create(
+                oh_member=oh_member,
+                data_type='netatmo_detailed')
+    data.data = json.dumps(s)
+    data.save()
+    print('saved detailed netatmo json')
 
 
 def compile_lastfm(oh_member):

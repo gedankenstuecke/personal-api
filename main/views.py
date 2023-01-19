@@ -230,35 +230,32 @@ def deliver_data(request, oh_id):
 def deliver_lametric(request, oh_id):
     oh_member = OpenHumansMember.objects.get(oh_id=oh_id)
     try:
-        spotify = Data.objects.get(
+        lastfm = Data.objects.get(
                         oh_member=oh_member,
-                        data_type='music')
+                        data_type='music_lastfm')
     except:
-        spotify = ""
-    try:
-        location = Data.objects.get(oh_member=oh_member, data_type='location')
-    except:
-        location = ""
+        lastfm = ""
     try:
         netatmo = Data.objects.get(
                         oh_member=oh_member,
-                        data_type='netatmo')
+                        data_type='netatmo_detailed')
     except:
         netatmo = ""
     json_data = {}
     frames = []
 
-    if location:
-        loc_json = json.loads(location.data)
-        frames.append({"icon": 2351, 'text': "Bastian is in " + loc_json['place']})
 
     if spotify:
-        music_json = json.loads(spotify.data)
-        frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['title'], music_json['artist'])})
+        music_json = json.loads(lastfm.data)
+        frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['song_title'], music_json['artist'])})
     if netatmo:
         netatmo_data = json.loads(netatmo.data)
-        frames.append({"icon": 4744, "text": "The CO2 level at home is {} ppm".format(netatmo_data['CO2'])})
-        frames.append({"icon": 96, "text": "The temperature is {} °C (outdoor) & {} °C (indoor)".format(netatmo_data['outdoor_temperature'], netatmo_data['indoor_temperature'])})
+        for module,data in netatmo_data.items():
+            for dtype, value in data.items():
+                if dtype == 'CO2':
+                    frames.append({"icon": 4744, "text": "The CO2 level @ {} is {} ppm".format(module, value)})
+                if dtype == 'temperature':
+                    frames.append({"icon": 96, "text": "The temperature @ is {} °C".format(module, value)})
 
     response = JsonResponse({"frames": frames})
     response["Access-Control-Allow-Origin"] = "*"
