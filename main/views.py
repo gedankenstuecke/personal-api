@@ -255,7 +255,7 @@ def deliver_lametric(request, oh_id):
                 if dtype == 'CO2':
                     frames.append({"icon": 4744, "text": "The CO2 level @ {} is {} ppm".format(module, value)})
                 if dtype == 'temperature':
-                    frames.append({"icon": 96, "text": "The temperature @ is {} °C".format(module, value)})
+                    frames.append({"icon": 96, "text": "The temperature @ {} is {} °C".format(module, value)})
 
     response = JsonResponse({"frames": frames})
     response["Access-Control-Allow-Origin"] = "*"
