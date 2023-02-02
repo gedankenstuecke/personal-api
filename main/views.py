@@ -245,9 +245,9 @@ def deliver_lametric(request, oh_id):
     frames = []
 
 
-    if lastfm:
-        music_json = json.loads(lastfm.data)
-        frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['song_title'], music_json['artist'])})
+    #if lastfm:
+    #    music_json = json.loads(lastfm.data)
+    #    frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['song_title'], music_json['artist'])})
     if netatmo:
         netatmo_data = json.loads(netatmo.data)
         for module,data in netatmo_data.items():
@@ -306,6 +306,8 @@ def delete_netatmo(request):
         na.delete()
         return redirect('/')
 
+
+@csrf_exempt
 def ah_receiver(request):
     if request.method == 'POST':
         body = json.loads(request.body)
