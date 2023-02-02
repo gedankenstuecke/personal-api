@@ -311,5 +311,5 @@ def delete_netatmo(request):
 def ah_receiver(request):
     if request.method == 'POST':
         body = json.loads(request.body)
-        print(body)
+        print(json.dumps(body))
         return JsonResponse({"result": "ok"})
