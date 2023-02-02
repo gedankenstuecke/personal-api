@@ -305,3 +305,9 @@ def delete_netatmo(request):
         na = request.user.openhumansmember.netatmouser
         na.delete()
         return redirect('/')
+
+def ah_receiver(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        print(body)
+        return JsonResponse({"result": "ok"})
