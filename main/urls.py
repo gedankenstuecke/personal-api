@@ -16,5 +16,5 @@ urlpatterns = [
     path('data/<int:oh_id>/', views.deliver_data, name='deliver_data'),
     path('lametric_data/<int:oh_id>/', views.deliver_lametric, name='deliver_lametric'),
     url(r'^delete-netatmo/?$', views.delete_netatmo, name='delete-netatmo'),
-    url(r'^ah_receiver/?$', views.ah_receiver, name='ah-receiver'),
+    url(r'^ah_receiver/<int:ah_id>/', views.ah_receiver, name='ah-receiver'),
 ]

@@ -12,7 +12,7 @@ import requests
 import json
 import arrow
 from openhumans.models import OpenHumansMember
-from .models import FitbitUser, Data, NetatmoUser, LastFmUser
+from .models import FitbitUser, Data, NetatmoUser, LastFmUser, AppleHealthUser
 
 
 def index(request):
@@ -308,8 +308,15 @@ def delete_netatmo(request):
 
 
 @csrf_exempt
-def ah_receiver(request):
+def ah_receiver(request,ah_id):
     if request.method == 'POST':
+        ah_user = AppleHealthUser.objects.get(endpoint_token=ah_id)
         body = json.loads(request.body)
+
+        data, _ = Data.objects.get_or_create(
+                    oh_member=ah_user.oh_member,
+                    data_type='apple_health')
+        data.data = json.dumps(json_data)
+        data.save()
         print(json.dumps(body))
         return JsonResponse({"result": "ok"})
