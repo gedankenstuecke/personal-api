@@ -206,6 +206,13 @@ def deliver_data(request, oh_id):
         )
     except:
         lastfm = ""
+    try:
+        apple_health = Data.objects.get(
+            oh_member=oh_member,
+            data_type='apple_health'
+        )
+    except:
+        lastfm = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)
@@ -219,6 +226,8 @@ def deliver_data(request, oh_id):
         json_data['netatmo'] = json.loads(netatmo.data)
     if lastfm:
         json_data['lastfm'] = json.loads(lastfm.data)
+    if apple_health:
+        json_data['apple_health'] = json.loads(apple_health.data)
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
