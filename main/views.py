@@ -316,7 +316,7 @@ def ah_receiver(request,ah_id):
         data, _ = Data.objects.get_or_create(
                     oh_member=ah_user.oh_member,
                     data_type='apple_health')
-        data.data = json.dumps(json_data)
+        data.data = json.dumps(body)
         data.save()
         print(json.dumps(body))
         return JsonResponse({"result": "ok"})
