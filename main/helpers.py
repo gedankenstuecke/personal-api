@@ -139,7 +139,7 @@ def get_oura_deviations_v2(sleep_data):
     hrv_devs = []
 
     for i in sleep_data:
-        if 'temperature_deviation' in i['readiness'].keys():
+        if 'readiness' in i.keys():
             temperature_devs.append(i['readiness']['temperature_deviation'])
         if i['lowest_heart_rate'] != None and i['lowest_heart_rate'] != 255:
             hr_lowest_devs.append(i['lowest_heart_rate'])
