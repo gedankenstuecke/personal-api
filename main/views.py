@@ -193,12 +193,6 @@ def deliver_data(request, oh_id):
     except:
         oura_sleep = ""
     try:
-        oura_v2 = Data.objects.get(
-                        oh_member=oh_member,
-                        data_type='oura-sleep-v2')
-    except:
-        oura_v2 = ""
-    try:
         netatmo = Data.objects.get(
             oh_member=oh_member,
             data_type='netatmo'

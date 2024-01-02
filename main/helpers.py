@@ -141,11 +141,11 @@ def compile_oura_sleep(oh_member):
                     }
         data, _ = Data.objects.get_or_create(
                     oh_member=oh_member,
-                    data_type='oura-sleep-v2')
+                    data_type='oura-sleep')
         data.data = json.dumps(json_out)
         data.save()
-    except:
-        print('oura crashed')
+    except Exception as error:
+        print('oura crashed with ', error)
 
 
 def compile_location(oh_member):
