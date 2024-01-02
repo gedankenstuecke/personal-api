@@ -166,31 +166,29 @@ def get_oura_deviations_v2(sleep_data):
 
 def compile_oura_sleep_v2(oh_member):
     json_out = {}
-    try:
-        for f in oh_member.list_files():
-            if f['basename'] == 'oura-v2-sleep.json' and f['source'] == 'direct-sharing-184':
-                oura_sleep = requests.get(f['download_url']).json()
-                sleep_duration = round(oura_sleep[-1]['duration']/60/60, 2)
-                oura_temp = oura_sleep[-1]['readiness']['temperature_deviation']
-                oura_rhr = oura_sleep[-1]['lowest_heart_rate']
-                deviations = get_oura_deviations_v2(oura_sleep)
-            if f['basename'] == 'oura-v2-daily_activity.json' and f['source'] == 'direct-sharing-184':
-                oura_activity = requests.get(f['download_url']).json()
-                oura_steps = oura_activity[-1]['steps']
-        json_out = {
-                    'sleep_duration': sleep_duration,
-                    'steps': oura_steps,
-                    'temperature': oura_temp,
-                    'resting_hr': oura_rhr,
-                    'deviations': deviations
-                    }
-        data, _ = Data.objects.get_or_create(
-                    oh_member=oh_member,
-                    data_type='oura-sleep-v2')
-        data.data = json.dumps(json_out)
-        data.save()
-    except:
-        pass
+    for f in oh_member.list_files():
+        if f['basename'] == 'oura-v2-sleep.json' and f['source'] == 'direct-sharing-184':
+            oura_sleep = requests.get(f['download_url']).json()
+            sleep_duration = round(oura_sleep[-1]['duration']/60/60, 2)
+            oura_temp = oura_sleep[-1]['readiness']['temperature_deviation']
+            oura_rhr = oura_sleep[-1]['lowest_heart_rate']
+            deviations = get_oura_deviations_v2(oura_sleep)
+        if f['basename'] == 'oura-v2-daily_activity.json' and f['source'] == 'direct-sharing-184':
+            oura_activity = requests.get(f['download_url']).json()
+            oura_steps = oura_activity[-1]['steps']
+    json_out = {
+                'sleep_duration': sleep_duration,
+                'steps': oura_steps,
+                'temperature': oura_temp,
+                'resting_hr': oura_rhr,
+                'deviations': deviations
+                }
+    data, _ = Data.objects.get_or_create(
+                oh_member=oh_member,
+                data_type='oura-sleep-v2')
+    data.data = json.dumps(json_out)
+    data.save()
+
 
 def compile_location(oh_member):
     location_key = settings.TZKEY

@@ -193,6 +193,12 @@ def deliver_data(request, oh_id):
     except:
         oura_sleep = ""
     try:
+        oura_v2 = Data.objects.get(
+                        oh_member=oh_member,
+                        data_type='oura-sleep-v2')
+    except:
+        oura_v2 = ""
+    try:
         netatmo = Data.objects.get(
             oh_member=oh_member,
             data_type='netatmo'
@@ -222,6 +228,8 @@ def deliver_data(request, oh_id):
         json_data['location'] = json.loads(location.data)
     if oura_sleep:
         json_data['oura_sleep'] = json.loads(oura_sleep.data)
+    if oura_v2:
+        json_data['oura_sleep_v2'] = json.loads(oura_v2.data)
     if netatmo:
         json_data['netatmo'] = json.loads(netatmo.data)
     if lastfm:
