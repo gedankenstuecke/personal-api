@@ -12,7 +12,7 @@ import requests
 import json
 import arrow
 from openhumans.models import OpenHumansMember
-from .models import FitbitUser, Data, NetatmoUser, LastFmUser
+from .models import FitbitUser, Data, NetatmoUser, LastFmUser, AppleHealthUser
 
 
 def index(request):
@@ -206,6 +206,13 @@ def deliver_data(request, oh_id):
         )
     except:
         lastfm = ""
+    try:
+        apple_health = Data.objects.get(
+            oh_member=oh_member,
+            data_type='apple_health'
+        )
+    except:
+        lastfm = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)
@@ -219,6 +226,8 @@ def deliver_data(request, oh_id):
         json_data['netatmo'] = json.loads(netatmo.data)
     if lastfm:
         json_data['lastfm'] = json.loads(lastfm.data)
+    if apple_health:
+        json_data['apple_health'] = json.loads(apple_health.data)
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
@@ -245,9 +254,9 @@ def deliver_lametric(request, oh_id):
     frames = []
 
 
-    if lastfm:
-        music_json = json.loads(lastfm.data)
-        frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['song_title'], music_json['artist'])})
+    #if lastfm:
+    #    music_json = json.loads(lastfm.data)
+    #    frames.append({"icon": 15912, "text": "Bastian listened to {} by {}".format(music_json['song_title'], music_json['artist'])})
     if netatmo:
         netatmo_data = json.loads(netatmo.data)
         for module,data in netatmo_data.items():
@@ -306,8 +315,17 @@ def delete_netatmo(request):
         na.delete()
         return redirect('/')
 
-def ah_receiver(request):
+
+@csrf_exempt
+def ah_receiver(request,ah_id):
     if request.method == 'POST':
+        ah_user = AppleHealthUser.objects.get(endpoint_token=ah_id)
         body = json.loads(request.body)
-        print(body)
+
+        data, _ = Data.objects.get_or_create(
+                    oh_member=ah_user.oh_member,
+                    data_type='apple_health')
+        data.data = json.dumps(body)
+        data.save()
+        print(json.dumps(body))
         return JsonResponse({"result": "ok"})
