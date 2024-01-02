@@ -158,11 +158,22 @@ def get_oura_deviations_v2(sleep_data):
     hrv_std_one = np.mean(hrv_devs) - np.std(hrv_devs)
     hrv_std_two = np.mean(hrv_devs) - 2*np.std(hrv_devs)
 
-    temp = higher(sleep_data[-1]['temperature_deviation'],temp_std_one,temp_std_two)
-    hr = higher(sleep_data[-1]['hr_lowest'], hr_lowest_std_one, hr_lowest_std_two)
-    breath = lower(sleep_data[-1]['breath_average'],breath_std_one,breath_std_two)
-    hrv = lower(sleep_data[-1]['rmssd'], hrv_std_one, hrv_std_two)
-
+    if sleep_data[-1]['readiness']:
+        temp = higher(sleep_data[-1]['readiness']['temperature_deviation'],temp_std_one,temp_std_two)
+    else:
+        temp = 0
+    if sleep_data[-1]['lowest_heart_rate']:
+        hr = higher(sleep_data[-1]['lowest_heart_rate'], hr_lowest_std_one, hr_lowest_std_two)
+    else: 
+        hr = 0 
+    if sleep_data[-1]['average_breath']:
+        breath = lower(sleep_data[-1]['average_breath'],breath_std_one,breath_std_two)
+    else:
+        breath = 0 
+    if sleep_data[-1]['average_hrv']:
+        hrv = lower(sleep_data[-1]['average_hrv'], hrv_std_one, hrv_std_two)
+    else:
+        hrv = 0
     response = {
         'temp': temp, 'hr': hr, 'breath': breath, "hrv": hrv,
         "sum": temp + hr + breath + hrv
