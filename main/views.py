@@ -222,8 +222,6 @@ def deliver_data(request, oh_id):
         json_data['location'] = json.loads(location.data)
     if oura_sleep:
         json_data['oura_sleep'] = json.loads(oura_sleep.data)
-    if oura_v2:
-        json_data['oura_sleep_v2'] = json.loads(oura_v2.data)
     if netatmo:
         json_data['netatmo'] = json.loads(netatmo.data)
     if lastfm:
