@@ -77,68 +77,6 @@ def get_oura_deviations(sleep_data):
     hrv_devs = []
 
     for i in sleep_data:
-        temperature_devs.append(i['temperature_deviation'])
-        hr_lowest_devs.append(i['hr_lowest'])
-        breath_average_devs.append(i['breath_average'])
-        hrv_devs.append(i['rmssd'])
-
-    temp_std_one = np.mean(temperature_devs) + np.std(temperature_devs)
-    temp_std_two = np.mean(temperature_devs) + 2*np.std(temperature_devs)
-    hr_lowest_std_one = np.mean(hr_lowest_devs) + np.std(hr_lowest_devs)
-    hr_lowest_std_two = np.mean(hr_lowest_devs) + 2*np.std(hr_lowest_devs)
-    breath_std_one = np.mean(breath_average_devs) - np.std(breath_average_devs)
-    breath_std_two = np.mean(breath_average_devs) - 2* np.std(breath_average_devs)
-    hrv_std_one = np.mean(hrv_devs) - np.std(hrv_devs)
-    hrv_std_two = np.mean(hrv_devs) - 2*np.std(hrv_devs)
-
-    temp = higher(sleep_data[-1]['temperature_deviation'],temp_std_one,temp_std_two)
-    hr = higher(sleep_data[-1]['hr_lowest'], hr_lowest_std_one, hr_lowest_std_two)
-    breath = lower(sleep_data[-1]['breath_average'],breath_std_one,breath_std_two)
-    hrv = lower(sleep_data[-1]['rmssd'], hrv_std_one, hrv_std_two)
-
-    response = {
-        'temp': temp, 'hr': hr, 'breath': breath, "hrv": hrv,
-        "sum": temp + hr + breath + hrv
-    }
-    return response
-
-def compile_oura_sleep(oh_member):
-    json_out = {}
-    try:
-        for f in oh_member.list_files():
-            if f['basename'] == 'oura-data.json' and f['source'] == 'direct-sharing-184':
-                oura = requests.get(f['download_url']).json()
-                total_duration = oura['sleep'][-1]['duration']
-                awake = oura['sleep'][-1]['awake']
-                sleep_duration = total_duration - awake
-                sleep_duration = round(sleep_duration/60/60, 2)
-                oura_steps = oura['activity'][-1]['steps']
-                oura_temp = oura['sleep'][-1]['temperature_delta']
-                oura_rhr = oura['sleep'][-1]['hr_lowest']
-                deviations = get_oura_deviations(oura['sleep'])
-                json_out = {
-                    'sleep_duration': sleep_duration,
-                    'steps': oura_steps,
-                    'temperature': oura_temp,
-                    'resting_hr': oura_rhr,
-                    'deviations': deviations
-                    }
-                break
-        data, _ = Data.objects.get_or_create(
-                    oh_member=oh_member,
-                    data_type='oura-sleep')
-        data.data = json.dumps(json_out)
-        data.save()
-    except:
-        pass
-
-def get_oura_deviations_v2(sleep_data):
-    temperature_devs = []
-    hr_lowest_devs = []
-    breath_average_devs = []
-    hrv_devs = []
-
-    for i in sleep_data:
         if i['readiness']:
             if i['readiness']['temperature_deviation']:
                 temperature_devs.append(i['readiness']['temperature_deviation'])
@@ -180,30 +118,34 @@ def get_oura_deviations_v2(sleep_data):
     }
     return response
 
-def compile_oura_sleep_v2(oh_member):
-    json_out = {}
-    for f in oh_member.list_files():
-        if f['basename'] == 'oura-v2-sleep.json' and f['source'] == 'direct-sharing-184':
-            oura_sleep = requests.get(f['download_url']).json()
-            sleep_duration = round(oura_sleep[-1]['total_sleep_duration']/60/60, 2)
-            oura_temp = oura_sleep[-1]['readiness']['temperature_deviation']
-            oura_rhr = oura_sleep[-1]['lowest_heart_rate']
-            deviations = get_oura_deviations_v2(oura_sleep)
-        if f['basename'] == 'oura-v2-daily_activity.json' and f['source'] == 'direct-sharing-184':
-            oura_activity = requests.get(f['download_url']).json()
-            oura_steps = oura_activity[-1]['steps']
-    json_out = {
-                'sleep_duration': sleep_duration,
-                'steps': oura_steps,
-                'temperature': oura_temp,
-                'resting_hr': oura_rhr,
-                'deviations': deviations
-                }
-    data, _ = Data.objects.get_or_create(
-                oh_member=oh_member,
-                data_type='oura-sleep-v2')
-    data.data = json.dumps(json_out)
-    data.save()
+
+def compile_oura_sleep(oh_member):
+    try:
+        json_out = {}
+        for f in oh_member.list_files():
+            if f['basename'] == 'oura-v2-sleep.json' and f['source'] == 'direct-sharing-184':
+                oura_sleep = requests.get(f['download_url']).json()
+                sleep_duration = round(oura_sleep[-1]['total_sleep_duration']/60/60, 2)
+                oura_temp = oura_sleep[-1]['readiness']['temperature_deviation']
+                oura_rhr = oura_sleep[-1]['lowest_heart_rate']
+                deviations = get_oura_deviations(oura_sleep)
+            if f['basename'] == 'oura-v2-daily_activity.json' and f['source'] == 'direct-sharing-184':
+                oura_activity = requests.get(f['download_url']).json()
+                oura_steps = oura_activity[-1]['steps']
+        json_out = {
+                    'sleep_duration': sleep_duration,
+                    'steps': oura_steps,
+                    'temperature': oura_temp,
+                    'resting_hr': oura_rhr,
+                    'deviations': deviations
+                    }
+        data, _ = Data.objects.get_or_create(
+                    oh_member=oh_member,
+                    data_type='oura-sleep-v2')
+        data.data = json.dumps(json_out)
+        data.save()
+    except:
+        print('oura crashed')
 
 
 def compile_location(oh_member):
