@@ -169,7 +169,7 @@ def compile_oura_sleep_v2(oh_member):
     for f in oh_member.list_files():
         if f['basename'] == 'oura-v2-sleep.json' and f['source'] == 'direct-sharing-184':
             oura_sleep = requests.get(f['download_url']).json()
-            sleep_duration = round(oura_sleep[-1]['duration']/60/60, 2)
+            sleep_duration = round(oura_sleep[-1]['total_sleep_duration']/60/60, 2)
             oura_temp = oura_sleep[-1]['readiness']['temperature_deviation']
             oura_rhr = oura_sleep[-1]['lowest_heart_rate']
             deviations = get_oura_deviations_v2(oura_sleep)
