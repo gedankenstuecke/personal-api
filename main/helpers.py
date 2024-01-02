@@ -139,10 +139,14 @@ def get_oura_deviations_v2(sleep_data):
     hrv_devs = []
 
     for i in sleep_data:
-        temperature_devs.append(i['readiness']['temperature_deviation'])
-        hr_lowest_devs.append(i['lowest_heart_rate'])
-        breath_average_devs.append(i['average_breath'])
-        hrv_devs.append(i['average_hrv'])
+        if 'temperature_deviation' in i['readiness'].keys():
+            temperature_devs.append(i['readiness']['temperature_deviation'])
+        if i['lowest_heart_rate'] != None and i['lowest_heart_rate'] != 255:
+            hr_lowest_devs.append(i['lowest_heart_rate'])
+        if i['average_breath'] != None and i['average_breath'] != 255:
+            breath_average_devs.append(i['average_breath'])
+        if i['average_hrv'] != None and i['average_hrv'] != 255:
+            hrv_devs.append(i['average_hrv'])
 
     temp_std_one = np.mean(temperature_devs) + np.std(temperature_devs)
     temp_std_two = np.mean(temperature_devs) + 2*np.std(temperature_devs)
