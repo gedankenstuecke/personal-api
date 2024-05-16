@@ -212,7 +212,7 @@ def deliver_data(request, oh_id):
             data_type='apple_health'
         )
     except:
-        lastfm = ""
+        apple_health = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)
