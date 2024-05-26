@@ -12,7 +12,8 @@ import requests
 import json
 import arrow
 from openhumans.models import OpenHumansMember
-from .models import FitbitUser, Data, NetatmoUser, LastFmUser, AppleHealthUser
+from .models import FitbitUser, Data, NetatmoUser, LastFmUser, AppleHealthUser, BookwyrmHandle
+from .helpers import format_bookwyrmhandle
 
 
 def index(request):
@@ -36,6 +37,8 @@ def index(request):
             'fitbit/authorized')
         if hasattr(request.user.openhumansmember, 'lastfmuser'):
             context['lastfmuser'] = request.user.openhumansmember.lastfmuser.username
+        if hasattr(request.user.openhumansmember, 'bookwyrmhandle'):
+            context['bookwyrmhandle'] = request.user.openhumansmember.bookwyrmhandle.username
         if hasattr(request.user.openhumansmember, 'fitbituser'):
             context['fitbituser'] = request.user.openhumansmember.fitbituser
             if not request.user.openhumansmember.fitbituser.access_token:
@@ -94,7 +97,7 @@ def create_fitbit(request):
 
 def create_lastfm(request):
     """
-    collect fitbit client id/Secret
+    create/update lastfm user
     """
     if request.method == 'POST':
         if hasattr(request.user.openhumansmember, 'lastfmuser'):
@@ -104,6 +107,22 @@ def create_lastfm(request):
         lastfm_user.oh_member = request.user.openhumansmember
         lastfm_user.username = request.POST.get('username')
         lastfm_user.save()
+    return redirect('/')
+
+
+def create_bookwyrm(request):
+    """
+    create/update bookywyrm user
+    """
+    if request.method == 'POST':
+        if hasattr(request.user.openhumansmember, 'bookwyrmhandle'):
+            bookwyrmhandle = request.user.openhumansmember.bookwyrmhandle
+        else:
+            bookwyrmhandle = BookwyrmHandle()
+        bookwyrmhandle.oh_member = request.user.openhumansmember
+        username = request.POST.get('username')
+        bookwyrmhandle.username = format_bookwyrmhandle(username)
+        bookwyrmhandle.save()
     return redirect('/')
 
 
@@ -213,6 +232,13 @@ def deliver_data(request, oh_id):
         )
     except:
         apple_health = ""
+    try:
+        bookwyrm = Data.objects.get(
+            oh_member=oh_member,
+            data_type='bookwyrm'
+        )
+    except:
+        bookwyrm = ""
     json_data = {}
     if fitbit:
         json_data['activity'] = json.loads(fitbit.data)
@@ -228,6 +254,8 @@ def deliver_data(request, oh_id):
         json_data['lastfm'] = json.loads(lastfm.data)
     if apple_health:
         json_data['apple_health'] = json.loads(apple_health.data)
+    if bookwyrm:
+        json_data['bookwyrm'] = json.loads(bookwyrm.data)
     response = JsonResponse(json_data)
     response["Access-Control-Allow-Origin"] = "*"
     response["Access-Control-Allow-Methods"] = "GET, OPTIONS"

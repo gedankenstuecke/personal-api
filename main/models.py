@@ -136,3 +136,8 @@ class AppleHealthUser(models.Model):
     endpoint_token = models.CharField(max_length=36,
                                       unique=True,
                                       default=generate_endpoint_token)
+
+class BookwyrmHandle(models.Model):
+    oh_member = models.OneToOneField(OpenHumansMember,
+                                     on_delete=models.CASCADE)
+    username = models.CharField(max_length=256, default='')

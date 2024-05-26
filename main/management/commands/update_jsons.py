@@ -26,5 +26,8 @@ class Command(BaseCommand):
                     if hasattr(oh_member, 'netatmouser'):
                         print('do netatmo')
                         helpers.compile_netatmo(oh_member)
+                    if hasattr(oh_member, 'bookwyrmhandle'):
+                        print('do bookwyrm')
+                        helpers.compile_bookwyrm(oh_member)
             except:
                 pass

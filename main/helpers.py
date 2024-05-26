@@ -6,6 +6,7 @@ import pandas
 import io
 import geopy.distance
 import numpy as np
+import feedparser
 
 
 def compile_fitbit(oh_member):
@@ -298,5 +299,38 @@ def compile_lastfm(oh_member):
     data, _ = Data.objects.get_or_create(
                 oh_member=oh_member,
                 data_type='music_lastfm')
+    data.data = json.dumps(json_data)
+    data.save()
+
+def format_bookwyrmhandle(bwh):
+    if not bwh.startswith("@"):
+        bwh = "@" + bwh
+    return bwh
+
+
+def read_bookwyrm_feed(oh_member):
+    bwh = oh_member.bookwyrmhandle.username
+    user, server = bwh[1:].split("@")
+    feed = "https://{}/user/{}/rss".format(server,user)
+    results= feedparser.parse(feed)
+    
+    for entry in results.entries:
+        desc = entry.description
+        if desc.startswith("rated <em>"):
+            return desc
+        elif "finished reading <a href" in desc:
+            return desc[desc.find("finished reading <a href"):]
+        elif "started reading <a href" in desc:
+            return desc[desc.find("started reading <a href"):]
+    return ""
+
+def compile_bookwyrm(oh_member):
+    json_data = {
+        "last_update": read_bookwyrm_feed(oh_member)
+    }
+    
+    data, _ = Data.objects.get_or_create(
+                oh_member=oh_member,
+                data_type='bookwyrm')
     data.data = json.dumps(json_data)
     data.save()

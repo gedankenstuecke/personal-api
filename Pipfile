@@ -15,6 +15,7 @@ tzwhere = "*"
 pandas = "*"
 geopy = "*"
 psycopg2 = "~=2.8.5"
+feedparser = "*"
 
 [dev-packages]
 

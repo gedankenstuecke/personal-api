@@ -131,6 +131,17 @@
     <input type="submit" class="btn btn-default" value="Update last.fm username">
   </form>
 </p>
+
+<h3>Add/edit your bookwyrm account</h3>
+<form action="{% url 'create-bookwyrm' %}" method="post">
+  {% csrf_token %}
+  <div class="form-group">
+    <label>Enter a new <i>Bookwyrm</i> user name (format: <i>@user@server.url</i>)</label> <input class="form-control" name="username" size=60 type="text" value="{{bookwyrmhandle}}" placeholder="Enter your bookwyrmuser username (@user@server.handle)" required>
+  </div>
+  <input type="submit" class="btn btn-default" value="Update Bookwyrm username">
+</form>
+</p>
+
   </div>
 
 {% endif %}
